@@ -1,0 +1,15 @@
+{
+  "name": "Network Sites",
+  "uri": "https://github.com/NoahY/q2a-network",
+  "description": "Allows networking of sites",
+  "version": "0.5",
+  "date": "2012-01-13",
+  "author": "NoahY",
+  "author_uri": "http://www.question2answer.org/",
+  "license": "GPLv2",
+  "update_uri": "https://raw.githubusercontent.com/NoahY/q2a-network/master/metadata.json",
+  "min_q2a": "1.5",
+  "min_php": "5.1.6"
+  "load_order": "after_db_init"
+}
+
