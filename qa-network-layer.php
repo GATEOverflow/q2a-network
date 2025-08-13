@@ -9,7 +9,7 @@
 			if(isset($this->content['form_activity'])) {
 				$user = $this->network_user_sites($this->content['raw']['userid']);
 				if($user)
-					$this->content['form_activity']['fields']['answers'] = array(
+					$this->content['form_activity']['fields']['network'] = array(
 						'type' => 'static',
 						'label' => qa_lang_html('network/network_sites'),
 						'value' => '<SPAN CLASS="qa-uf-user-network-sites">'.$user.'</SPAN>',
@@ -108,11 +108,11 @@
 			$idx = 0;
 			$html = '';
 			if(qa_opt('network_site_icon_this') && $this_points) {
-				$html.= '<a class="qa-network-site-icon" href="'.qa_opt('site_url').'" title="'.qa_opt('site_title').': '.($this_points==1?qa_lang_html('main/1_point'):qa_lang_html_sub('main/x_points',number_format($this_points))).'"><img src="'.qa_opt('site_url').'favicon.ico"/></a>';
+				$html.= '<a class="qa-network-site-icon" href="'.qa_opt('site_url').'" title="'.qa_opt('site_title').': '.($this_points==1?qa_lang_html('main/1_point'):qa_lang_html_sub('main/x_points',number_format($this_points))).'"><img width="10%" src="'.qa_opt('site_url').'favicon.ico"/></a>';
 			}
 			while(qa_opt('network_site_'.$idx.'_url')) {
 				if(@$this->network_points[$uid]) {
-						$points = $this->network_points[$uid][$idx];
+						$points = @$this->network_points[$uid][$idx];
 				}
 				else {
 					$points = (int)qa_db_read_one_value(
@@ -129,7 +129,7 @@
 					continue;
 				}
 				
-				$html.= '<a class="qa-network-site-icon" href="'.qa_opt('network_site_'.$idx.'_url').'" title="'.qa_opt('network_site_'.$idx.'_title').': '.($points==1?qa_lang_html('main/1_point'):qa_lang_html_sub('main/x_points',number_format($points))).'"><img src="'.qa_opt('network_site_'.$idx.'_url').qa_opt('network_site_'.$idx.'_icon').'"/></a>';
+				$html.= '<a class="qa-network-site-icon" href="'.qa_opt('network_site_'.$idx.'_url').'" title="'.qa_opt('network_site_'.$idx.'_title').': '.($points==1?qa_lang_html('main/1_point'):qa_lang_html_sub('main/x_points',number_format($points))).'"><img width="10%" src="'.qa_opt('network_site_'.$idx.'_url').qa_opt('network_site_'.$idx.'_icon').'"/></a>';
 				$idx++;
 			}
 			return $html;					

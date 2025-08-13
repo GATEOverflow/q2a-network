@@ -6,6 +6,26 @@
 			return ($template!='admin');
 		}
 
+function init_queries($tableslc) {
+                require_once QA_INCLUDE_DIR."db/selects.php";
+                $queries = array();
+                $tablename=qa_db_add_table_prefix('postmeta');
+                if(!in_array($tablename, $tableslc)) {
+                        $queries[] =
+                                'CREATE TABLE '.$tablename.'(
+                                                meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                                                post_id bigint(20) unsigned NOT NULL,
+                                                meta_key varchar(255) DEFAULT \'\',
+                                                meta_value longtext,
+                                                PRIMARY KEY (meta_id),
+                                                KEY post_id (post_id),
+                                                KEY meta_key (meta_key)
+                                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8';
+                }
+                return $queries;
+        }
+
+
 		function option_default($option) {
 			
 			$idx = 0;
