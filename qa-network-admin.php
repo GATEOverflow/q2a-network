@@ -32,24 +32,76 @@ function init_queries($tableslc) {
 			
 			switch($option) {
 			case 'network_site_css':
-				return '.qa-network-site-link {
-	font-size:110%;
-	padding-bottom:8px;
-	font-weight:bold;
-	text-decoration:none;
+				return '
+.network-sites {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
-.qa-network-site-icon,.qa-network-site-link img {
-	vertical-align:sub;
-}
-#qa-network-site-migrated {
-	background: none repeat scroll 0 0 #DDDDDD;
-	font-size: 125%;
-	font-weight: bold;
-	margin: 20px 0;
-	padding: 20px;
-	text-align: center;
 
-}';
+.qa-network-site-link {
+    display: block;
+	background-color: rgb(0 0 0 / 10%);
+    padding: 1rem;
+    margin: 0.8rem 0;
+    border-radius: 14px;
+	color: inherit;
+	transition: background-color .15s ease;
+	white-space: nowrap;
+}
+.qa-network-site-link:hover {
+    background-color: rgb(0 0 0 / 15%);
+}
+
+[data-theme="dark"] .qa-network-site-link {
+    background-color: rgb(255 255 255 / 5%);
+    box-shadow: inset 0px 0px 0px 1px rgb(255 255 255 / 10%);
+}
+[data-theme="dark"] .qa-network-site-link:hover {
+    background-color: rgb(255 255 255 / 10%);
+}
+
+.qa-network-site-thumbnail, .qa-network-site-details {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.qa-network-site-thumbnail {
+    width: 40px;
+    height: 40px;
+}
+.qa-network-site-thumbnail img {
+    width: 100%;
+    height: auto;
+}
+
+.qa-network-site-details {
+    width: calc(100% - 30px); /* visually maxed */
+	padding: 0 0.8rem;
+	color: #040304;
+}
+
+[data-theme="dark"] .qa-network-site-details {
+    color: #dcddde;
+}
+
+.qa-network-site-title, .qa-network-site-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qa-network-site-title {
+    font-weight: bold;
+	padding: 0;
+	margin: 0;
+}
+
+.qa-network-site-description {
+	opacity: .7;
+}
+
+
+';
 			case 'network_site_min_points':
 				return 100;
 			default:

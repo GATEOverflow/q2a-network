@@ -58,7 +58,7 @@
 			return sprintf(
 				'<a class="qa-network-site-link" href="%s">
 					<div class="qa-network-site-thumbnail">
-						<img width="40" height="40" class="qa-lazy-img" data-src="%s" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>
+						<img width="32" height="32" alt="Network Site Avatar" class="qa-lazy-img" data-src="%s" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>
 					</div>
 					<div class="qa-network-site-details">
 						<div class="qa-network-site-title" title="%s">%s</div>
