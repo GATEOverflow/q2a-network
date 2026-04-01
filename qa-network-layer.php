@@ -150,6 +150,144 @@
 		{
 			preg_match( '#qa-user-link">([^<]*)<#', $string, $matches );
 			return !empty($matches[1]) ? $matches[1] : null;
-		}	
+		}
+
+		function body_suffix()
+		{
+			qa_html_theme_base::body_suffix();
+
+			// Only inject on admin plugin pages for super admins
+			if ($this->template !== 'admin' || qa_get_logged_in_level() < QA_USER_LEVEL_SUPER)
+				return;
+
+			$request = qa_request();
+			if (strpos($request, 'admin/plugins') !== 0)
+				return;
+
+			// Check if a plugin options form is being shown
+			if (!isset($this->content['form_plugin_options']))
+				return;
+
+			// Get network sites for the confirmation dialog
+			$sites = array();
+			$idx = 0;
+			while (qa_opt('network_site_' . $idx . '_url')) {
+				$title = qa_opt('network_site_' . $idx . '_title');
+				if (strlen($title))
+					$sites[] = $title;
+				$idx++;
+			}
+
+			if (empty($sites))
+				return;
+
+			$sitesJs = qa_js(implode(', ', $sites));
+			$applyUrl = qa_js(qa_path('network-apply-settings', null, qa_opt('site_url')));
+
+			$this->output(<<<HTML
+<script>
+(function() {
+	// Find the plugin options form via its wrapper div
+	var wrapper = document.querySelector('.qa-part-form-plugin-options');
+	var form = wrapper ? wrapper.querySelector('form') : null;
+	if (!form) {
+		// Fallback: look for any form inside the main content that isn't the plugins_form
+		var allForms = document.querySelectorAll('.qa-main form');
+		for (var i = 0; i < allForms.length; i++) {
+			if (allForms[i].getAttribute('name') !== 'plugins_form') {
+				form = allForms[i];
+				break;
+			}
+		}
+	}
+	if (!form) return;
+
+	var buttons = form.querySelector('.qa-form-tall-buttons');
+	if (!buttons) {
+		var submitBtn = form.querySelector('input[type="submit"]');
+		if (submitBtn) buttons = submitBtn.parentNode;
+	}
+	if (!buttons) return;
+
+	var btn = document.createElement('input');
+	btn.type = 'button';
+	btn.value = 'Apply to Network Sites';
+	btn.className = 'qa-form-tall-button';
+	btn.style.marginLeft = '10px';
+	btn.style.backgroundColor = '#e67e22';
+	btn.style.color = '#fff';
+	btn.style.border = '1px solid #d35400';
+	btn.style.cursor = 'pointer';
+	btn.style.padding = '6px 16px';
+
+	btn.onclick = function() {
+		var options = {};
+		var inputs = form.querySelectorAll('input[name], textarea[name], select[name]');
+		var count = 0;
+		for (var i = 0; i < inputs.length; i++) {
+			var el = inputs[i];
+			var name = el.name;
+			if (!name || name === 'qa_form_security_code' || name === 'qa_click' ||
+				el.type === 'submit' || el.type === 'button' || el.type === 'hidden') continue;
+			if (el.type === 'checkbox') {
+				options[name] = el.checked ? '1' : '0';
+			} else {
+				options[name] = el.value;
+			}
+			count++;
+		}
+
+		if (count === 0) {
+			alert('No settings found to apply.');
+			return;
+		}
+
+		var msg = 'Apply ' + count + ' setting(s) to network sites:\\n' + {$sitesJs} +
+			'\\n\\nNote: This writes to the qa_options table on each site. ' +
+			'Plugins using custom tables will not be affected.' +
+			'\\n\\nThis will overwrite these settings on all network sites. Continue?';
+		if (!confirm(msg)) return;
+
+		btn.disabled = true;
+		btn.value = 'Applying...';
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', {$applyUrl}, true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState !== 4) return;
+			btn.disabled = false;
+			btn.value = 'Apply to Network Sites';
+			if (xhr.status === 200) {
+				try {
+					var resp = JSON.parse(xhr.responseText);
+					if (resp.error) {
+						alert('Error: ' + resp.error);
+					} else if (resp.results) {
+						var summary = '';
+						for (var r = 0; r < resp.results.length; r++) {
+							summary += resp.results[r].site + ': ' + resp.results[r].applied + ' applied';
+							if (resp.results[r].errors.length > 0)
+								summary += ' (' + resp.results[r].errors.length + ' errors)';
+							summary += '\\n';
+						}
+						alert('Done!\\n\\n' + summary);
+					}
+				} catch(e) {
+					alert('Unexpected response from server.');
+				}
+			} else {
+				alert('Request failed (HTTP ' + xhr.status + ').');
+			}
+		};
+		xhr.send('options=' + encodeURIComponent(JSON.stringify(options)));
+	};
+
+	buttons.appendChild(btn);
+})();
+</script>
+HTML
+			);
+		}
 	}
 

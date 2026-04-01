@@ -15,6 +15,32 @@ Features
 - widget lists all sites in network
 - ability to migrate questions, including entire set of children and grandchildren (see `Migrating`_ below)
 - show optional migrated notice below questions
+- **Apply to Network Sites** button on any plugin's admin settings page (super admin only) to replicate settings across all network sites
+
+---------------------------
+Apply to Network Sites
+---------------------------
+When a super admin opens any plugin's settings page (Admin -> Plugins -> plugin options), an **Apply to Network Sites** button appears next to the save button. Clicking it collects all form field values and writes them to the ``qa_options`` table of every configured network site.
+
+.. note::
+   This only applies to settings stored in the standard ``qa_options`` table (the ``qa_opt()`` system). Plugins that use custom tables are not affected by the button.
+
+**Programmatic usage for custom tables:**
+
+Other plugins can call the static helper method directly to replicate data to any table across network sites::
+
+    // Default: writes to {prefix}options (title, content columns)
+    qa_network_apply_page::apply_to_network(
+        array('my_option' => 'my_value')
+    );
+
+    // Custom table: writes to {prefix}postmeta (meta_key, meta_value columns)
+    qa_network_apply_page::apply_to_network(
+        array('some_key' => 'some_value'),
+        'postmeta',    // table name suffix (appended to each site's prefix)
+        'meta_key',    // key column name
+        'meta_value'   // value column name
+    );
 
 ------------
 Installation

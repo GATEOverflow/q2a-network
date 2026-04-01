@@ -24,6 +24,7 @@
 	qa_register_plugin_layer('qa-network-layer.php', 'Network Layer');	
 	qa_register_plugin_module('module', 'qa-network-admin.php', 'qa_network_admin', 'Network Site Admin');
 	qa_register_plugin_module('page', 'qa-network-migrate.php', 'qa_network_migrate', 'Network Site Post Migration');
+	qa_register_plugin_module('page', 'qa-network-apply.php', 'qa_network_apply_page', 'Network Apply Settings');
 //	qa_register_plugin_module('module', 'qa-network-migrate-admin.php', 'qa_network_migrate_admin', 'Network Site Post Migration');
 	qa_register_plugin_phrases('qa-network-lang-*.php', 'network');
 	qa_register_plugin_module('widget', 'qa-network-widget.php', 'qa_network_widget', 'Network Sites Widget');
